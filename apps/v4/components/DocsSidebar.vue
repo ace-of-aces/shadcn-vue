@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { ContentNavigationItem } from '@nuxt/content'
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +12,7 @@ import {
 import { showMcpDocs } from '~/lib/flag'
 
 const props = defineProps<{
-  tree: ContentNavigationItem
+  tree: NavigationItem
 }>()
 const TOP_LEVEL_SECTIONS = [
   { name: 'Get Started', href: '/docs/introduction' },
@@ -103,7 +102,16 @@ function isActive(href: string) {
                   :is-active="childItem?.path === path"
                   class="data-[active=true]:bg-accent data-[active=true]:border-accent 3xl:fixed:w-full 3xl:fixed:max-w-48 relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md"
                 >
-                  <NuxtLink :to="childItem?.path">
+                  <a v-if="childItem.external" :href="childItem.path" target="_blank" rel="noopener noreferrer">
+                    <span class="absolute inset-0 flex w-(--sidebar-width) bg-transparent" />
+                    {{ childItem.title }}
+                    <span
+                      v-if="childItem.new"
+                      class="flex size-2 rounded-full bg-green-500"
+                      title="New"
+                    />
+                  </a>
+                  <NuxtLink v-else :to="childItem.path">
                     <span class="absolute inset-0 flex w-(--sidebar-width) bg-transparent" />
                     {{ childItem.title }}
                     <span

@@ -13,6 +13,8 @@ export interface NavigationItem {
   children?: NavigationItem[]
   page?: false
   type?: NavigationItemType
+  /** Indicates if the navigation item should use a regular <a> tag instead of a NuxtLink */
+  external?: true
   [key: string]: unknown
 }
 
@@ -50,6 +52,12 @@ export async function useNavigation() {
     transform: (data) => {
       const doc = data.find(i => i.stem === 'docs')!
       const rootDocs = doc.children?.filter(i => !EXCLUDED_PARENT_TITLE.includes(i.title ?? '')).map(i => mapWithType(i, doc)) ?? []
+      rootDocs.push({
+        title: 'llms.txt',
+        path: '/llms.txt',
+        external: true,
+      })
+
       const nonRootDocs = doc.children?.filter(i => i.children).map(i => mapWithType(i, doc)) ?? []
 
       return [{ ...doc, children: [{
